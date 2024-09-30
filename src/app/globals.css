@@ -106,3 +106,7 @@ loader-1 {
     transform: rotate(1turn);
   }
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
