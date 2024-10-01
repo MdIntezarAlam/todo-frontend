@@ -2,11 +2,11 @@ import { type TAccount } from '@/types/TUsers';
 import { create } from 'zustand';
 
 interface IAuthState {
-  currentUser: TAccount | null;
-  setCurrentUser: (user: TAccount | null) => void;
+  auth: TAccount | null;
+  setAuth: (user: TAccount | null) => void;
 }
 
-export const useAuthStore = create<IAuthState>((set) => ({
-  currentUser: null,
-  setCurrentUser: (user) => set({ currentUser: user }),
+export const useAuth = create<IAuthState>((set) => ({
+  auth: null,
+  setAuth: (user) => set({ auth: user }),
 }));

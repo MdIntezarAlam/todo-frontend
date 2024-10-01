@@ -2,17 +2,17 @@
 
 import Link from 'next/link';
 import { useMemo, type ReactNode } from 'react';
-import { useAuthStore } from '@/lib/slice/useAuth';
+import { useAuth } from '@/lib/slice';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { currentUser: data } = useAuthStore();
+  const { auth } = useAuth();
 
   const status = useMemo(() => {
-    if (data) {
+    if (auth) {
       return 'authenticated';
     }
     return 'unauthenticated';
-  }, [data]);
+  }, [auth]);
 
   if (status === 'unauthenticated') {
     return (
@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             href='/auth/login'
             className='cursor-pointer px-2 text-primary-foreground underline hover:text-primary-foreground'
           >
-            z Login
+            Login
           </Link>
           to View this Page
         </h1>

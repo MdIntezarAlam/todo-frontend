@@ -1,13 +1,12 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/lib/slice/useAuth';
+import { useAuth } from '@/lib/slice';
 import { useRouter } from 'next/navigation';
-/* eslint-disable react/jsx-key */
 
 import React from 'react';
 
 export default function Dashboard() {
-  const { currentUser } = useAuthStore();
+  const { auth } = useAuth();
   const Router = useRouter();
   const dashItems = [
     {
@@ -34,9 +33,7 @@ export default function Dashboard() {
   return (
     <section className='mx-auto min-h-[90vh] w-fit justify-center pt-3 xl:flex xl:justify-start'>
       <h1 className='mb-2 text-2xl font-bold capitalize md:text-start lg:text-start'>
-        {currentUser?.account.name
-          ? `Welcome ${currentUser?.account.name}`
-          : null}
+        {auth?.account.name ? `Welcome ${auth?.account.name}` : null}
       </h1>
       <div className='grid grid-cols-2 gap-5 p-5 md:grid-cols-3 lg:grid-cols-4'>
         {dashItems.map((item, index) => (

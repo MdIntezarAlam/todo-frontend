@@ -14,7 +14,7 @@ import { env } from '@/lib/utils/configs/env';
 import Loader from '@/components/common/Loader';
 import { getErrorMessage } from '@/lib/utils/handler';
 import { useRouter } from 'next/navigation';
-import { useTodoStore } from '@/lib/slice/userTodo';
+import { useTodo } from '@/lib/slice';
 
 const todoSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -28,7 +28,7 @@ interface IProps {
 }
 export default function EditTodos({ id }: IProps) {
   const router = useRouter();
-  const { currentTodo, setCurrentTodo } = useTodoStore((s) => s);
+  const { currentTodo, setCurrentTodo } = useTodo((s) => s);
   const queryClient = useQueryClient();
 
   const getSingleTodo = async (id: string) => {

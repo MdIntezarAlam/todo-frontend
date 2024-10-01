@@ -1,5 +1,5 @@
 'use client';
-import { useAuthStore } from '@/lib/slice/useAuth';
+import { useAuth } from '@/lib/slice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react';
 
@@ -8,7 +8,7 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { currentUser: data } = useAuthStore();
+  const { auth: data } = useAuth();
   const router = useRouter();
   const status = useMemo(() => {
     if (data) {

@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/lib/slice/useAuth';
+import { useAuth } from '@/lib/slice';
 import { env } from '@/lib/utils/configs/env';
 import { getErrorMessage } from '@/lib/utils/handler';
 import { type TAccount } from '@/types/TUsers';
@@ -22,7 +22,7 @@ export type loginValidator = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const router = useRouter();
-  const { setCurrentUser } = useAuthStore();
+  const { setAuth } = useAuth();
 
   const loginFormHooks = useForm<loginValidator>({
     defaultValues: undefined,
@@ -33,7 +33,7 @@ const LoginForm = () => {
     mutationFn: async (val: loginValidator) => {
       const res = await axios.post(`${env.AUTH_URL}/login`, val);
       console.log(res.data);
-      setCurrentUser(res.data as TAccount);
+      setAuth(res.data as TAccount);
       toast.success('Login successfully');
       router.push('/');
       return res.data;

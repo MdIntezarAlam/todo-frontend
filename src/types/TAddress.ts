@@ -1,4 +1,7 @@
-export type IAddress = Array<{
+export interface TAddress {
+  address: TAddresses[];
+}
+export interface TAddresses {
   _id: string;
   name: string;
   contactName: string;
@@ -10,4 +13,4 @@ export type IAddress = Array<{
   country: string;
   pincode: number;
   __v: number;
-}>;
+}

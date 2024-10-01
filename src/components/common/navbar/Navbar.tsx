@@ -1,5 +1,5 @@
 'use client';
-import { useAuthStore } from '@/lib/slice/useAuth';
+import { useAuth } from '@/lib/slice';
 import Link from 'next/link';
 import React from 'react';
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export default function Navbar() {
-  const { currentUser } = useAuthStore();
+  const { auth } = useAuth();
   const dropItem = [
     {
       label: 'My Dashboard',
@@ -36,7 +36,7 @@ export default function Navbar() {
   return (
     <div className='sticky top-0 z-50 flex w-full items-center justify-between bg-background p-4 text-foreground shadow-xl'>
       <h1 className='text-xl font-bold'>Daily Basis Managment Applicaion</h1>
-      {!currentUser ? (
+      {!auth ? (
         <Link href={'/auth/login'}>Login</Link>
       ) : (
         <>

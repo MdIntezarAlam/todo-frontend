@@ -6,7 +6,7 @@ interface ITodoState {
   setCurrentTodo: (todo: Data | null) => void;
 }
 
-export const useTodoStore = create<ITodoState>((set) => ({
+export const useTodo = create<ITodoState>((set) => ({
   currentTodo: null,
   setCurrentTodo: (todo) => set({ currentTodo: todo }),
 }));

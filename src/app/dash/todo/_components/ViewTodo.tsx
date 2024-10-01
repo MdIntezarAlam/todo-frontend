@@ -10,12 +10,12 @@ import { getErrorMessage } from '@/lib/utils/handler';
 import { MdDeleteSweep } from 'react-icons/md';
 import { GrEdit } from 'react-icons/gr';
 import { useRouter } from 'next/navigation';
-import { useTodoStore } from '@/lib/slice/userTodo';
+import { useTodo } from '@/lib/slice';
 
 export default function ViewTodo() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { setCurrentTodo } = useTodoStore();
+  const { setCurrentTodo } = useTodo();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;

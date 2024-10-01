@@ -3,8 +3,7 @@
 import Loader from '@/components/common/Loader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/lib/slice/useAuth';
-import { useDebounce } from '@/lib/slice/useDebounce';
+import { useAuth, useDebounce } from '@/lib/slice';
 import { env } from '@/lib/utils/configs/env';
 import { getErrorMessage } from '@/lib/utils/handler';
 import { type TAccount } from '@/types/TUsers';
@@ -40,7 +39,7 @@ type signupValidator = z.infer<typeof signupSchema>;
 const LoginForm = () => {
   const Router = useRouter();
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const { setCurrentUser } = useAuthStore();
+  const { setAuth } = useAuth();
 
   const signupHooks = useForm<signupValidator>({
     defaultValues: undefined,
@@ -89,7 +88,7 @@ const LoginForm = () => {
       const res = await axios.post(`${env.AUTH_URL}/signup`, val);
       toast.success('Account created successfully');
       Router.push('/auth/login');
-      setCurrentUser(res.data as TAccount);
+      setAuth(res.data as TAccount);
       return res.data;
     },
     onError: (error) => {

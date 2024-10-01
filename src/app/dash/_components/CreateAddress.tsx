@@ -19,13 +19,14 @@ import { stateValues } from '@/lib/constant/state';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
-import { type IAddress } from '@/types/TAddress';
-import useAddressHooks from '@/lib/slice/useAddressHooks';
+import useAddressHooks from '@/lib/hooks/useAddressHooks';
 import { env } from '@/lib/utils/configs/env';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/utils/handler';
+import { useAddressStore } from '@/lib/slice';
+import { type TAddresses } from '@/types/TAddress';
 
-export interface TAddress {
+export interface IAddress {
   name: string;
   contactName: string;
   address: string;
@@ -40,28 +41,28 @@ export interface TAddress {
 interface ICreate {
   showAddress: boolean;
   setShowAddress: (showAddress: boolean) => void;
-  setAddresses: React.Dispatch<React.SetStateAction<IAddress>>;
 }
 
 export default function CreateAddress({
   showAddress,
   setShowAddress,
-  setAddresses,
 }: ICreate) {
   const { addressForm } = useAddressHooks();
   const queryClient = useQueryClient();
+  const { setAddresses } = useAddressStore();
 
   const onSubmit = useMutation({
-    mutationFn: async (values: TAddress) => {
+    mutationFn: async (values: IAddress) => {
       const res = await axios.post(`${env.BACKEND_URL}/address/create`, values);
-      setAddresses(res.data.data as IAddress);
+      setAddresses(res.data.data as TAddresses);
       setShowAddress(false);
     },
-    onSuccess: () => {
-      addressForm.reset();
-      queryClient.invalidateQueries({
-        queryKey: ['address'],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['addresses'],
+        exact: true,
       });
+      addressForm.reset();
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));

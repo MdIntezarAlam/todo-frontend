@@ -27,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.441.0",
+    "mern-todo": "link:",
     "next": "14.2.13",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "react": "^18",

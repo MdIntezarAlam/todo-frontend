@@ -41,6 +41,9 @@ dependencies:
   lucide-react:
     specifier: ^0.441.0
     version: 0.441.0(react@18.3.1)
+  mern-todo:
+    specifier: 'link:'
+    version: 'link:'
   next:
     specifier: 14.2.13
     version: 14.2.13(react-dom@18.3.1)(react@18.3.1)
