@@ -45,7 +45,7 @@ const LoginForm = () => {
   });
 
   return (
-    <div className='m-auto flex h-screen w-full flex-col gap-4 bg-primary p-4 text-black'>
+    <div className='m-auto flex w-full flex-col gap-4 bg-primary p-4 text-black'>
       <div className='m-auto flex w-full flex-col gap-10 rounded-md border bg-secondary p-10 lg:w-1/2'>
         <div className='flex flex-col items-center gap-4'>
           <h1 className='text-4xl font-medium'>Login</h1>

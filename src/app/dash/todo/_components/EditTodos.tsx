@@ -33,7 +33,7 @@ export default function EditTodos({ id }: IProps) {
 
   const getSingleTodo = async (id: string) => {
     try {
-      const res = await axios.get(`${env.TODO_URL}/fetch/${id}`);
+      const res = await axios.get(`${env.BACKEND_URL}/fetch/${id}`);
       return res.data.data;
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -56,7 +56,7 @@ export default function EditTodos({ id }: IProps) {
 
   const onSubmit = useMutation({
     mutationFn: async (val: ITodoValues) => {
-      const res = await axios.put(`${env.TODO_URL}/edit/${id}`, val);
+      const res = await axios.put(`${env.BACKEND_URL}/edit/${id}`, val);
       toast.success(res.data.message);
       console.log('res: ', res);
       return res.data;
@@ -67,7 +67,7 @@ export default function EditTodos({ id }: IProps) {
         exact: true,
       });
       todoForm.reset();
-      router.push('/todo');
+      router.push('/dash/todo');
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));

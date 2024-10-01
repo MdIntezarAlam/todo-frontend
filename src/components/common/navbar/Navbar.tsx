@@ -19,22 +19,22 @@ export default function Navbar() {
   const dropItem = [
     {
       label: 'My Dashboard',
-      href: '/dashboard',
+      href: '/dash',
       icon: <MdDashboard className='text-lg' />,
     },
     {
       label: 'My Profile',
-      href: '/dashboard/profile',
+      href: '/dash/profile',
       icon: <MdAccountCircle className='text-xl' />,
     },
     {
       label: 'My Addresse',
-      href: '/dashboard/profile',
+      href: '/dash/address',
       icon: <MdAccountCircle className='text-xl' />,
     },
   ];
   return (
-    <div className='sticky top-0 z-50 flex w-full items-center justify-between bg-secondary p-4 text-black shadow-xl'>
+    <div className='sticky top-0 z-50 flex w-full items-center justify-between bg-background p-4 text-foreground shadow-xl'>
       <h1 className='text-xl font-bold'>Daily Basis Managment Applicaion</h1>
       {!currentUser ? (
         <Link href={'/auth/login'}>Login</Link>

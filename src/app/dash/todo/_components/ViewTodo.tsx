@@ -23,7 +23,7 @@ export default function ViewTodo() {
   const { data, isLoading, isError } = useQuery<TypesTodo['data']>({
     queryKey: ['todos'],
     queryFn: async () => {
-      const data = await axios.get(`${env.TODO_URL}/fetch`);
+      const data = await axios.get(`${env.BACKEND_URL}/fetch`);
       const res = data.data.data;
       return res;
     },
@@ -31,7 +31,7 @@ export default function ViewTodo() {
 
   const deleteSingleTodo = useMutation({
     mutationFn: async (id: string) => {
-      const res = await axios.delete(`${env.TODO_URL}/delete/${id}`);
+      const res = await axios.delete(`${env.BACKEND_URL}/delete/${id}`);
       toast.success(res.data.message);
       return res.data;
     },
@@ -47,7 +47,7 @@ export default function ViewTodo() {
   });
   const deleteAllTodo = useMutation({
     mutationFn: async () => {
-      const res = await axios.delete(`${env.TODO_URL}/delete`);
+      const res = await axios.delete(`${env.BACKEND_URL}/delete`);
       toast.success(res.data.message);
       return res.data;
     },
@@ -91,7 +91,7 @@ export default function ViewTodo() {
       return;
     }
     setCurrentTodo(selectedTodo);
-    router.push(`/todo/edit/${id}`);
+    router.push(`/dash/todo/edit/${id}`);
   };
 
   return (

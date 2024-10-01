@@ -30,7 +30,7 @@ export default function AddToDo() {
 
   const onSubmit = useMutation({
     mutationFn: async (val: ITodoValues) => {
-      const res = await axios.post(`${env.TODO_URL}/create`, val);
+      const res = await axios.post(`${env.BACKEND_URL}/create`, val);
       toast.success(res.data.message);
       return res.data;
     },

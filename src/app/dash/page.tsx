@@ -28,7 +28,7 @@ export default function Dashboard() {
     {
       name: 'Comming Soon',
       icon: '/images/dash.png',
-      path: '/das',
+      path: '/dash',
     },
   ];
   return (

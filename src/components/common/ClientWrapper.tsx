@@ -13,7 +13,9 @@ export const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
   });
   return (
     <QueryClientProvider client={queryClient}>
-      <main className='mx-auto min-h-[85vh] max-w-[2000px]'>{children}</main>
+      <main className='mx-auto min-h-[85vh] max-w-[2000px] bg-background'>
+        {children}
+      </main>
     </QueryClientProvider>
   );
 };
