@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Dialog,
   DialogHeader,
@@ -22,22 +20,13 @@ import { Button } from '@/components/ui/button';
 import { env } from '@/lib/utils/configs/env';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/utils/handler';
+import { type TAddresses } from '@/types/TAddress';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAddressStore } from '@/lib/slice';
+import { useEffect } from 'react';
 import Loader from '@/components/common/Loader';
-
-export interface IAddress {
-  name: string;
-  contactName: string;
-  address: string;
-  street1: string;
-  street2: string;
-  city: string;
-  state: string;
-  country: string;
-  pincode: number;
-}
 
 export const addressValidator = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -51,24 +40,58 @@ export const addressValidator = z.object({
   pincode: z.coerce.number().min(6, 'minimum 6 and maximum 6 digits'),
 });
 export type TypeAddress = z.infer<typeof addressValidator>;
+
 interface ICreate {
+  data?: TAddresses;
   showAddress: boolean;
   setShowAddress: (showAddress: boolean) => void;
 }
 
-export default function CreateAddress({
+export default function EditAddress({
+  data,
   showAddress,
   setShowAddress,
 }: ICreate) {
+  const queryClient = useQueryClient();
+  const { setAddresses } = useAddressStore();
+
   const addressForm = useForm<TypeAddress>({
-    defaultValues: {},
+    defaultValues: {
+      name: data?.name,
+      contactName: data?.contactName,
+      address: data?.address,
+      street1: data?.street1,
+      street2: data?.street2,
+      city: data?.city,
+      state: data?.state,
+      country: data?.country,
+      pincode: data?.pincode,
+    },
     resolver: zodResolver(addressValidator),
   });
-  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (data) {
+      addressForm.reset({
+        name: data.name,
+        contactName: data.contactName,
+        address: data.address,
+        street1: data.street1,
+        street2: data.street2,
+        city: data.city,
+        state: data.state,
+        country: data.country,
+        pincode: data.pincode,
+      });
+    }
+  }, [data]);
 
   const onSubmit = useMutation({
-    mutationFn: async (values: IAddress) => {
-      await axios.post(`${env.BACKEND_URL}/address/create`, values);
+    mutationFn: async (values: TypeAddress) => {
+      const res = await axios.put(
+        `${env.BACKEND_URL}/address/update/${data?._id}`,
+        values
+      );
+      setAddresses(res.data.data as TAddresses);
       setShowAddress(false);
     },
     onSuccess: async () => {
@@ -83,18 +106,19 @@ export default function CreateAddress({
     },
   });
 
+  if (!data) return null;
+
   return (
     <>
       <Loader isLoading={onSubmit.isPending} />
       <Dialog open={showAddress} onOpenChange={setShowAddress}>
         <DialogContent className='rounded-md sm:max-w-[40rem]'>
           <DialogHeader>
-            <h1 className='text-start text-xl font-bold'>Create Address</h1>
+            <h1 className='text-start text-xl font-bold'>Edit Address</h1>
           </DialogHeader>
           <form
-            onSubmit={addressForm.handleSubmit((data) => {
-              console.log('submitted data', data);
-              onSubmit.mutate(data);
+            onSubmit={addressForm.handleSubmit((val) => {
+              onSubmit.mutate(val);
             })}
             className='flex flex-col gap-5'
           >
@@ -190,7 +214,7 @@ export default function CreateAddress({
               </Select>
             </div>
             <DialogFooter className='mt-2 flex w-full items-end'>
-              <Button type='submit'>Create Address</Button>
+              <Button type='submit'>Edit Address</Button>
             </DialogFooter>
           </form>
         </DialogContent>

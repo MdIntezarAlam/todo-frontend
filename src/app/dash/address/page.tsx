@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 'use client';
-import React, { type ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { type TAddress } from '@/types/TAddress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -10,23 +10,14 @@ import axios from 'axios';
 import { env } from '@/lib/utils/configs/env';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/utils/handler';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+
 import { useAddressStore } from '@/lib/slice';
+import EditAddress from '../_components/EditAddress';
+import ConfirmDialog from '@/app/_components/ConfrmDialoge';
 
 export default function Address() {
   const [showAddress, setShowAddress] = useState(false);
   const { setAddresses } = useAddressStore();
-
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery<TAddress['address']>({
@@ -51,7 +42,6 @@ export default function Address() {
         exact: true,
       });
     },
-
     onError: async (error) => {
       toast.error(getErrorMessage(error));
     },
@@ -83,7 +73,7 @@ export default function Address() {
             Add New Address
           </Button>
         </div>
-        {data && (
+        {data && data.length > 0 && (
           <Button
             variant={'destructive'}
             className='rounded-md text-lg'
@@ -100,11 +90,11 @@ export default function Address() {
         )}
       </div>
 
-      {data && data?.length > 0 ? (
+      {data && data.length > 0 ? (
         <div className='grid grid-cols-3 gap-2'>
-          {data?.map((item) => {
-            return <AddressCard key={item._id} {...item} />;
-          })}
+          {data.map((item) => (
+            <AddressCard key={item._id} {...item} />
+          ))}
         </div>
       ) : (
         <div className='flex w-full items-center justify-center border shadow-sm'>
@@ -137,6 +127,7 @@ function AddressCard(props: TAddress['address'][0]) {
     pincode,
   } = props;
   const queryClient = useQueryClient();
+  const [editAddress, setEditAddress] = useState(false);
 
   const deleteSingleAddress = useMutation({
     mutationFn: async (id: string) => {
@@ -145,19 +136,14 @@ function AddressCard(props: TAddress['address'][0]) {
       return res.data;
     },
     onSuccess: async (_, id) => {
-      queryClient.setQueryData<TAddress['address']>(
-        ['addresses'],
-        (oldData) => {
-          if (!oldData) return [];
-          return oldData.filter((address) => address._id !== id);
-        }
+      queryClient.setQueryData<TAddress['address']>(['addresses'], (oldData) =>
+        oldData?.filter((address) => address._id !== id)
       );
       await queryClient.invalidateQueries({
         queryKey: ['addresses'],
         exact: true,
       });
     },
-
     onError: (error) => {
       toast.error(getErrorMessage(error));
     },
@@ -167,75 +153,35 @@ function AddressCard(props: TAddress['address'][0]) {
     <div className='flex w-full flex-col gap-2 rounded-md border bg-card/50 p-4 text-black shadow'>
       <h1 className='text-2xl font-medium'>{name}</h1>
       <div className='flex gap-1 font-semibold'>
-        Name : <span className='font-medium'>{name}</span>
+        Name: <span className='font-medium'>{name}</span>
       </div>
       <div className='flex gap-1 font-semibold'>
-        Contact Name :<span className='font-medium'>{contactName}</span>
+        Contact Name: <span className='font-medium'>{contactName}</span>
       </div>
       <div className='flex w-full flex-col gap-1 font-semibold'>
-        Address :
+        Address:
         <span className='font-medium'>
-          {address}, {street1}, {street2},{city},{state},{country},{pincode}
+          {address}, {street1}, {street2}, {city}, {state}, {country}, {pincode}
         </span>
       </div>
 
       <div className='mt-5 flex items-center justify-start gap-4'>
-        <Button variant={'default'} className='!rounnded-md !w-1/3'>
+        <Button
+          onClick={() => setEditAddress(true)}
+          variant='default'
+          className='w-1/3 rounded-md'
+        >
           Edit
         </Button>
-        <ConfirmationDialog
-          action={() => deleteSingleAddress.mutate(_id)}
-          text={
-            <Button variant='destructive' className='!h-10 w-1/4' type='button'>
-              Delete
-            </Button>
-          }
-        />
+        {editAddress && (
+          <EditAddress
+            showAddress={editAddress}
+            setShowAddress={setEditAddress}
+            data={props}
+          />
+        )}
+        <ConfirmDialog action={() => deleteSingleAddress.mutate(_id)} />
       </div>
     </div>
-  );
-}
-
-function ConfirmationDialog({
-  action,
-  text,
-  description,
-  title,
-}: {
-  action: () => void;
-  text?: ReactNode | string;
-  title?: string | ReactNode;
-  description?: string | ReactNode;
-}) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        {text ?? <Button type='button'>Delete</Button>}
-      </AlertDialogTrigger>
-      <AlertDialogContent className='w-11/12 rounded-md'>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {title ?? 'Are you absolutely sure?'}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {description ??
-              'This action cannot be undone. Please confirm you want to delete this list.'}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel className='bg-destructive text-white'>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            className='bg-black text-white'
-            onClick={() => {
-              action();
-            }}
-          >
-            Yes
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 }

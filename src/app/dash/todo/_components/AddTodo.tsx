@@ -50,6 +50,7 @@ export default function AddToDo() {
     <div className='flex min-h-[70vh] flex-col gap-4 rounded-xl bg-card p-4'>
       <Loader isLoading={onSubmit.isPending} />
       <h1 className='text-center text-4xl font-medium'>Add To Do</h1>
+
       <form
         className='grid w-full gap-10'
         onSubmit={todoForm.handleSubmit((val) => {

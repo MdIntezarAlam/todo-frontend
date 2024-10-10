@@ -11,6 +11,7 @@ import { MdDeleteSweep } from 'react-icons/md';
 import { GrEdit } from 'react-icons/gr';
 import { useRouter } from 'next/navigation';
 import { useTodo } from '@/lib/slice';
+import Loader from '@/components/common/Loader';
 
 export default function ViewTodo() {
   const router = useRouter();
@@ -62,7 +63,7 @@ export default function ViewTodo() {
     },
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loader isLoading={isLoading} />;
   if (isError) return <p>Error</p>;
 
   const totalItems = data?.length ?? 0;
