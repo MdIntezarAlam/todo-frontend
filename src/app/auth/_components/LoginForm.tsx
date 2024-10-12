@@ -15,8 +15,8 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().min(3, 'Email is required'),
+  password: z.string().min(8, 'Password is required'),
 });
 export type loginValidator = z.infer<typeof loginSchema>;
 
@@ -31,7 +31,9 @@ const LoginForm = () => {
 
   const onSubmit = useMutation({
     mutationFn: async (val: loginValidator) => {
-      const res = await axios.post(`${env.AUTH_URL}/login`, val);
+      const res = await axios.post(`${env.AUTH_URL}/login`, val, {
+        withCredentials: true,
+      });
       console.log(res.data);
       setAuth(res.data as TAccount);
       toast.success('Login successfully');
@@ -39,14 +41,13 @@ const LoginForm = () => {
       return res.data;
     },
     onError: (error) => {
-      console.log('error', error);
       toast.error(getErrorMessage(error));
     },
   });
 
   return (
-    <div className='m-auto flex w-full flex-col gap-4 bg-primary p-4 text-black'>
-      <div className='m-auto flex w-full flex-col gap-10 rounded-md border bg-secondary p-10 lg:w-1/2'>
+    <div className='m-auto mt-4 flex min-h-[50vh] flex-col gap-4 rounded-lg border bg-background p-4 shadow-lg lg:w-1/2'>
+      <div className='m-auto flex min-w-full flex-col gap-10 rounded-md border-2 p-5'>
         <div className='flex flex-col items-center gap-4'>
           <h1 className='text-4xl font-medium'>Login</h1>
           <h1 className='text-2xl font-medium'>
@@ -79,7 +80,7 @@ const LoginForm = () => {
             <p className=''>or</p>
             <hr className='h-0.5 w-full bg-primary' />
           </div>
-          <div className='space-x-2 text-sm font-normal'>
+          <div className='space-x-2 text-center text-sm font-normal'>
             <span>Already have an account?</span>
             <a href='/auth/signup'>Signup</a>{' '}
           </div>

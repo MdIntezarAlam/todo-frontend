@@ -31,7 +31,7 @@ export default function Dashboard() {
     },
   ];
   return (
-    <section className='mx-auto min-h-[90vh] w-fit justify-center pt-3 xl:flex xl:justify-start'>
+    <section className='mx-auto flex min-h-[90vh] w-fit flex-col justify-center overflow-hidden pt-3 xl:flex xl:justify-start'>
       <h1 className='mb-2 text-2xl font-bold capitalize md:text-start lg:text-start'>
         {auth?.account.name ? `Welcome ${auth?.account.name}` : null}
       </h1>
@@ -40,7 +40,7 @@ export default function Dashboard() {
           <div
             onClick={() => Router.push(item.path)}
             key={index}
-            className='relative flex h-[250px] w-[250px] items-center justify-center'
+            className='relative flex h-[170px] w-[170px] items-center justify-center lg:h-[250px] lg:w-[250px]'
           >
             <img
               src={item.icon}

@@ -74,14 +74,9 @@ export default function Address() {
           </Button>
         </div>
         {data && data.length > 0 && (
-          <Button
-            variant={'destructive'}
-            className='rounded-md text-lg'
-            onClick={() => deleteAll.mutate()}
-          >
-            Delete All
-          </Button>
+          <ConfirmDialog title='Delete All' action={() => deleteAll.mutate()} />
         )}
+
         {showAddress && (
           <CreateAddress
             showAddress={showAddress}
@@ -180,7 +175,10 @@ function AddressCard(props: TAddress['address'][0]) {
             data={props}
           />
         )}
-        <ConfirmDialog action={() => deleteSingleAddress.mutate(_id)} />
+        <ConfirmDialog
+          title='Delete'
+          action={() => deleteSingleAddress.mutate(_id)}
+        />
       </div>
     </div>
   );

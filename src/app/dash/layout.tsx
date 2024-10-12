@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   if (status === 'unauthenticated') {
     return (
-      <div className='h-[90vh] items-center justify-center text-center md:flex'>
+      <div className='flex h-[100vh] items-center justify-center bg-primary text-center md:flex'>
         <h1 className='font-semibold text-primary-foreground md:text-base lg:text-2xl'>
           Please
           <Link

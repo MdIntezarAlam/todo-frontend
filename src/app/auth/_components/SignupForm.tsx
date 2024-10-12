@@ -92,13 +92,13 @@ const LoginForm = () => {
       return res.data;
     },
     onError: (error) => {
-      console.log('error', error);
+      console.log(error);
       toast.error(getErrorMessage(error));
     },
   });
   return (
-    <div className='m-auto flex h-screen w-full flex-col gap-4 bg-primary p-4 text-black'>
-      <div className='m-auto flex w-full flex-col gap-10 rounded-md border bg-secondary p-10 lg:w-1/2'>
+    <div className='m-auto mt-4 flex min-h-[50vh] flex-col gap-4 rounded-lg border bg-background p-4 shadow-lg lg:w-1/2'>
+      <div className='m-auto flex min-w-full flex-col gap-10 rounded-md border-2 p-5'>
         <div className='flex flex-col items-center gap-4'>
           <h1 className='text-4xl font-medium'>Signup</h1>
           <h1 className='text-2xl font-medium'>
@@ -147,9 +147,9 @@ const LoginForm = () => {
             <p className=''>or</p>
             <hr className='h-0.5 w-full bg-primary' />
           </div>
-          <div className='space-x-2 text-sm font-normal'>
+          <div className='space-x-2 text-center text-sm font-normal'>
             <span>Don't have an account?</span>
-            <a href='/auth/signup'>Login</a>{' '}
+            <a href='/auth/login'>Login</a>{' '}
           </div>
           <Button type='submit' className='h-12 w-full rounded-full'>
             Signup
