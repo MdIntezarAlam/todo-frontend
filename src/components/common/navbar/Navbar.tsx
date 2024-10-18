@@ -35,7 +35,7 @@ export default function Navbar() {
   ];
   return (
     <div className='sticky top-0 z-50 flex w-full items-center justify-between bg-background p-4 text-foreground shadow-xl'>
-      <h1 className='text-xl font-bold'>Daily Basis Managment Applicaion</h1>
+      <h1 className='text-xl font-bold'>Next Socket.IO</h1>
       {!auth ? (
         <Link href={'/auth/login'}>Login</Link>
       ) : (

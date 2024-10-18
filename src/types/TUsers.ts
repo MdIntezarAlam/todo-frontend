@@ -10,4 +10,5 @@ export interface Account {
   password: string;
   _id: string;
   __v: number;
+  token: string;
 }

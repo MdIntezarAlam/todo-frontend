@@ -34,7 +34,7 @@ const LoginForm = () => {
       const res = await axios.post(`${env.AUTH_URL}/login`, val, {
         withCredentials: true,
       });
-      console.log(res.data);
+      // console.log(res.data);
       setAuth(res.data as TAccount);
       toast.success('Login successfully');
       router.push('/');

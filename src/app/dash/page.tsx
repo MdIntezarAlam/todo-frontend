@@ -25,6 +25,11 @@ export default function Dashboard() {
       path: '/dash/address',
     },
     {
+      name: 'Support',
+      icon: '/images/dash.png',
+      path: '/dash/chat',
+    },
+    {
       name: 'Comming Soon',
       icon: '/images/dash.png',
       path: '/dash',
