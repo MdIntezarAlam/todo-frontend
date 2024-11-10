@@ -51,7 +51,7 @@ const LoginForm = () => {
           'https://dev-intezar-todo-in.onrender.com/api/v2/auth/login',
           val,
           {
-            withCredentials: true, // Ensure credentials (cookies) are included
+            withCredentials: true, // Ensure credentials (cookies) 
           }
         );
         setAuth(res.data as TAccount); // Store the account data in your auth context or state
