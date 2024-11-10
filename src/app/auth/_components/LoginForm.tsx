@@ -54,7 +54,7 @@ const LoginForm = () => {
             withCredentials: true, // Ensure credentials (cookies) are included
           }
         );
-        setAuth(res.data); // Store the account data in your auth context or state
+        setAuth(res.data as TAccount); // Store the account data in your auth context or state
         toast.success('Login successful');
         router.push('/'); // Redirect to home or dashboard
         return res.data;
