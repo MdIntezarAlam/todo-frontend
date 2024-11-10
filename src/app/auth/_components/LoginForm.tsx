@@ -29,20 +29,45 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  // const onSubmit = useMutation({
+  //   mutationFn: async (val: loginValidator) => {
+  //     const res = await axios.post(`https://dev-intezar-todo-in.onrender.com/api/v2/auth/login`, val, {
+  //       withCredentials: true,
+
+  //     });
+  //     // console.log(res.data);
+  //     setAuth(res.data as TAccount);
+  //     toast.success('Login successfully');
+  //     router.push('/');
+  //     return res.data;
+  //   },
+  //   onError: (error) => {
+  //     toast.error(getErrorMessage(`${error} err and dont know why`));
+  //   },
+  // });
   const onSubmit = useMutation({
     mutationFn: async (val: loginValidator) => {
-      const res = await axios.post(`${env.AUTH_URL}/login`, val, {
-        withCredentials: true,
-
-      });
-      // console.log(res.data);
-      setAuth(res.data as TAccount);
-      toast.success('Login successfully');
-      router.push('/');
-      return res.data;
+      try {
+        const res = await axios.post(
+          'https://dev-intezar-todo-in.onrender.com/api/v2/auth/login',
+          val,
+          {
+            withCredentials: true, // Ensure credentials are included
+          }
+        );
+        // Assuming res.data contains the account details
+        setAuth(res.data as TAccount); // Store the account data in your auth context or state
+        toast.success('Login successful');
+        router.push('/'); // Redirect to home or dashboard
+        return res.data;
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || 'Login failed. Please try again later.';
+        toast.error(errorMessage); // Display a user-friendly error message
+      }
     },
     onError: (error) => {
-      toast.error(getErrorMessage(error));
+      // Customize error handling if needed, like logging or alerting
+      toast.error(getErrorMessage(`${error} err and don't know why`));
     },
   });
 
