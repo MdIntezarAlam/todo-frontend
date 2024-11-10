@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/slice';
-import { env } from '@/lib/utils/configs/env';
 import { getErrorMessage } from '@/lib/utils/handler';
 import { type TAccount } from '@/types/TUsers';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -61,8 +60,8 @@ const LoginForm = () => {
         router.push('/'); // Redirect to home or dashboard
         return res.data;
       } catch (error) {
-        const errorMessage = error.response?.data?.message || 'Login failed. Please try again later.';
-        toast.error(errorMessage); // Display a user-friendly error message
+        console.log("Error while logging in:", error);
+        toast.error(getErrorMessage(`${error} err and dont know why`));
       }
     },
     onError: (error) => {
