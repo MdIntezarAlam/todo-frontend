@@ -33,6 +33,7 @@ const LoginForm = () => {
     mutationFn: async (val: loginValidator) => {
       const res = await axios.post(`${env.AUTH_URL}/login`, val, {
         withCredentials: true,
+
       });
       // console.log(res.data);
       setAuth(res.data as TAccount);
