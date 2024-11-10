@@ -28,47 +28,26 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  // const onSubmit = useMutation({
-  //   mutationFn: async (val: loginValidator) => {
-  //     const res = await axios.post(`https://dev-intezar-todo-in.onrender.com/api/v2/auth/login`, val, {
-  //       withCredentials: true,
-
-  //     });
-  //     // console.log(res.data);
-  //     setAuth(res.data as TAccount);
-  //     toast.success('Login successfully');
-  //     router.push('/');
-  //     return res.data;
-  //   },
-  //   onError: (error) => {
-  //     toast.error(getErrorMessage(`${error} err and dont know why`));
-  //   },
-  // });
   const onSubmit = useMutation({
     mutationFn: async (val: loginValidator) => {
       try {
-        const res = await axios.post(
-          'https://dev-intezar-todo-in.onrender.com/api/v2/auth/login',
-          val,
-          {
-            withCredentials: true, // Ensure credentials (cookies) 
-          }
-        );
-        setAuth(res.data as TAccount); // Store the account data in your auth context or state
-        toast.success('Login successful');
-        router.push('/'); // Redirect to home or dashboard
+        const res = await axios.post(`https://dev-intezar-todo-in.onrender.com/api/v2/auth/login`, val, {
+          withCredentials: true,
+        });
+        setAuth(res.data as TAccount);
+        toast.success('Login successfully');
+        router.push('/');
         return res.data;
       } catch (error) {
         console.log('Error while logging in:', error);
-        toast.error(getErrorMessage(`${error} err and don't know why`));
+        toast.error(getErrorMessage(`${error} err and dont know why`));
       }
     },
     onError: (error) => {
-      toast.error(getErrorMessage(`${error} err and don't know why`));
+      console.log('Error while logging in:', error);
+      toast.error(getErrorMessage(`${error} err and dont know why`));
     },
   });
-
-
   return (
     <div className='m-auto mt-4 flex min-h-[50vh] flex-col gap-4 rounded-lg border bg-background p-4 shadow-lg lg:w-1/2'>
       <div className='m-auto flex min-w-full flex-col gap-10 rounded-md border-2 p-5'>
