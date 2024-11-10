@@ -1,11 +1,10 @@
-
+// ChatBox.tsx
 import { useEffect, useState, useRef } from "react";
 import { type Socket } from "socket.io-client";
 import { VscSend } from "react-icons/vsc";
 import { cn } from "@/lib/utils/utils";
 import ChatHeader from "./ChatHeader";
 import { useAuth } from "@/lib/slice";
-
 
 interface ChatProps {
     socket: Socket;
@@ -20,7 +19,7 @@ interface Message {
 
 export default function ChatBox({ socket, room }: ChatProps) {
     const { auth } = useAuth();
-    const username = auth?.account?.name ?? "Anonymous"
+    const username = auth?.account?.name ?? "Anonymous"; 
     console.log("room", room);
     console.log("socket", socket);
 
@@ -44,7 +43,7 @@ export default function ChatBox({ socket, room }: ChatProps) {
     };
 
     useEffect(() => {
-        // load old msg before Sending old messages to the user
+        // load old msg before sending old messages to the user
         socket.on("load_messages", (messages: Message[]) => {
             console.log(socket.id);
             console.log("loading  prev messages", messages);
@@ -57,7 +56,7 @@ export default function ChatBox({ socket, room }: ChatProps) {
             setMessageList((list) => [...list, data]);
         });
 
-        // unmounts Clean up the listeners 
+        // unmounts clean up the listeners 
         return () => {
             socket.off("receive_message");
             socket.off("load_messages");
@@ -79,7 +78,7 @@ export default function ChatBox({ socket, room }: ChatProps) {
                     <div key={index} className={cn({
                         "justify-end": username === messageContent.author,
                         "justify-start": username !== messageContent.author
-                    })} >
+                    })}>
                         <div className={cn("w-[70%] overflow-hidden break-words my-2", {
                             "ml-auto bg-green-200 border border-green-800 rounded-t-xl rounded-bl-xl p-2": username === messageContent.author,
                             "mr-auto bg-green-200 border border-green-800 rounded-t-xl rounded-br-xl p-2": username !== messageContent.author
@@ -106,7 +105,6 @@ export default function ChatBox({ socket, room }: ChatProps) {
                     className="!h-full w-full border-0 outline-none bg-transparent placeholder:text-foreground/50"
                 />
                 <VscSend onClick={sendMessage} className="text-4xl cursor-pointer mr-3 p-1" />
-
             </footer>
         </section >
     );
