@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -21,12 +21,18 @@ export type loginValidator = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const router = useRouter();
-  const { setAuth } = useAuth();
+  const { setAuth, auth } = useAuth();
 
   const loginFormHooks = useForm<loginValidator>({
     defaultValues: undefined,
     resolver: zodResolver(loginSchema),
   });
+
+  useEffect(() => {
+    if (auth) {
+      setAuth(auth);
+    }
+  }, [auth]);
 
   const onSubmit = useMutation({
     mutationFn: async (val: loginValidator) => {
