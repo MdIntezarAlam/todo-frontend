@@ -7,6 +7,7 @@ import { type TAccount } from '@/types/TUsers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { headers } from 'next/headers';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -33,6 +34,9 @@ const LoginForm = () => {
       try {
         const res = await axios.post(`https://dev-intezar-todo-in.onrender.com/api/v2/auth/login`, val, {
           withCredentials: true,
+          headers: {
+            'Content-Type': 'Authorization',
+          }
         });
         setAuth(res.data as TAccount);
         toast.success('Login successfully');
