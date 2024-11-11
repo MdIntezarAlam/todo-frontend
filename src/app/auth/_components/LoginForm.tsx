@@ -34,7 +34,7 @@ const LoginForm = () => {
         const res = await axios.post(`https://dev-intezar-todo-in.onrender.com/api/v2/auth/login`, val, {
           withCredentials: true,
           headers: {
-            'Content-Type': 'Authorization',
+            'Content-Type': 'application/json',
           }
         });
         setAuth(res.data as TAccount);
