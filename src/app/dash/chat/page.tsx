@@ -1,6 +1,6 @@
-import React from 'react'
-import SupportDshboard from './_components'
+import React from 'react';
+import SupportDshboard from './_components';
 
 export default function Support() {
-    return (<SupportDshboard />)
+  return <SupportDshboard />;
 }

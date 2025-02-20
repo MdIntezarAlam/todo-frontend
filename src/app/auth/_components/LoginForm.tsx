@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/slice';
+import { env } from '@/lib/utils/configs/env';
 import { getErrorMessage } from '@/lib/utils/handler';
 import { type TAccount } from '@/types/TUsers';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,11 +32,11 @@ const LoginForm = () => {
   const onSubmit = useMutation({
     mutationFn: async (val: loginValidator) => {
       try {
-        const res = await axios.post(`https://dev-intezar-todo-in.onrender.com/api/v2/auth/login`, val, {
+        const res = await axios.post(`${env.AUTH_URL}/login`, val, {
           withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
-          }
+          },
         });
         setAuth(res.data as TAccount);
         toast.success('Login successfully');
