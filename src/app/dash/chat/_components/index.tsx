@@ -20,19 +20,25 @@ export default function SupportDshboard() {
   const ticketId = useSearchParams().get('ticket');
   console.log('ticketId', ticketId);
 
-  useEffect(() => {
-    setTicketData(data);
-  }, [socket, setTicketData]);
-
-  const { data } = useQuery<TypeTicket['data']>({
+  const { data, isSuccess, isError, error } = useQuery<
+    TypeTicket['data'],
+    Error
+  >({
     queryKey: ['tickets'],
     queryFn: async () => {
       const res = await axios.get(`${env.BACKEND_URL}/fetch-ticket`);
-      const data = res.data.data as TypeTicket['data'];
-      setTicketData(data);
-      return data;
+      return res.data.data;
     },
   });
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      setTicketData(data);
+    }
+    if (isError) {
+      console.error('❌ API Fetch Error:', error);
+    }
+  }, [isSuccess, isError, data, error, setTicketData]);
 
   return (
     <main className='mb-5 h-[90vh] w-full overflow-hidden rounded-md border bg-gray-100 p-2'>

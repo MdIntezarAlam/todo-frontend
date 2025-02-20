@@ -1,6 +1,8 @@
+'use client';
 import { cn } from '@/lib/utils/utils';
 import { type TicketData } from '@/types/TypeTicket';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 
 export default function ViewTicket(props: TicketData) {
   const { description, subject, reasonType, _id } = props;
@@ -8,17 +10,27 @@ export default function ViewTicket(props: TicketData) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const selectedTicket = useMemo(
+    () => searchParams.get('ticket'),
+    [searchParams]
+  );
+
+  const handleClick = useCallback(() => {
+    if (selectedTicket !== _id) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('ticket', _id);
+      router.replace(`?${params.toString()}`);
+    }
+  }, [selectedTicket, _id, searchParams, router]);
+
   return (
     <div
-      onClick={() => {
-        const parmas = new URLSearchParams(searchParams.toString());
-        parmas.set('ticket', _id);
-        router.replace(`?${parmas.toString()}`);
-      }}
+      onClick={handleClick}
       className={cn(
-        'flex w-full flex-col rounded-md border bg-background p-4 text-sm font-bold shadow-sm',
+        'flex w-full flex-col rounded-md border bg-background p-4 text-sm font-bold shadow-sm transition-colors',
         {
-          'border-green-400': _id === searchParams.get('ticket'),
+          'border-green-400 bg-green-50': _id === selectedTicket,
+          'hover:bg-gray-100': _id !== selectedTicket,
         }
       )}
     >

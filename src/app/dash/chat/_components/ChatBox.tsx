@@ -1,5 +1,5 @@
-// ChatBox.tsx
-import { useEffect, useState, useRef } from 'react';
+'use client';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { type Socket } from 'socket.io-client';
 import { VscSend } from 'react-icons/vsc';
 import { cn } from '@/lib/utils/utils';
@@ -20,42 +20,50 @@ interface Message {
 export default function ChatBox({ socket, room }: ChatProps) {
   const { auth } = useAuth();
   const username = auth?.account?.name ?? 'Anonymous';
-  console.log('room', room);
-  console.log('socket', socket);
 
-  const [currentMessage, setCurrentMessage] = useState<string>('');
+  const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<Message[]>([]);
 
   const autoScroll = useRef<HTMLDivElement>(null);
 
-  const sendMessage = () => {
-    if (currentMessage !== '') {
-      const messageData: Message = {
-        author: username,
-        message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ':' +
-          new Date(Date.now()).getMinutes(),
-      };
+  const sendMessage = useCallback(() => {
+    if (!currentMessage.trim()) return;
 
-      socket.emit('send_message', { ...messageData, room });
-      setMessageList((list) => [...list, messageData]);
-      setCurrentMessage('');
-    }
-  };
+    const messageData: Message = {
+      author: username,
+      message: currentMessage.trim(),
+      time: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+
+    socket.emit('send_message', { ...messageData, room });
+    setMessageList((list) => [...list, messageData]);
+    setCurrentMessage('');
+  }, [currentMessage, username, room, socket]);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    },
+    [sendMessage]
+  );
 
   useEffect(() => {
-    // load old msg before sending old messages to the user
+    // load old msg before sending new msg
     socket.on('load_messages', (messages: Message[]) => {
       console.log(socket.id);
       console.log('loading  prev messages', messages);
       setMessageList(messages);
     });
-
     // send message to the user db
     socket.on('receive_message', (data: Message) => {
       console.log('receive_message', data);
+      setMessageList((list) => [...list, data]);
       setMessageList((list) => [...list, data]);
     });
 
@@ -63,63 +71,63 @@ export default function ChatBox({ socket, room }: ChatProps) {
     return () => {
       socket.off('receive_message');
       socket.off('load_messages');
-      console.log('Clean up the listeners when the component unmounts');
     };
   }, [socket]);
 
   useEffect(() => {
     if (autoScroll.current) {
-      autoScroll.current.scrollTop = autoScroll.current.scrollHeight;
+      autoScroll.current.scrollTo({
+        top: autoScroll.current.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   }, [messageList]);
 
   return (
     <section className='ml-auto flex h-full w-full flex-col overflow-hidden rounded-md border-2'>
       <ChatHeader username={username} ticketId={room} />
+
       <main
         ref={autoScroll}
         className='h-full overflow-y-auto border bg-white p-4'
       >
-        {messageList.map((messageContent, index) => (
-          <div
-            key={index}
-            className={cn({
-              'justify-end': username === messageContent.author,
-              'justify-start': username !== messageContent.author,
-            })}
-          >
+        {messageList.map((messageContent, index) => {
+          const isUser = username === messageContent.author;
+          return (
             <div
-              className={cn('my-2 w-[70%] overflow-hidden break-words', {
-                'ml-auto rounded-t-xl rounded-bl-xl border border-green-800 bg-green-200 p-2':
-                  username === messageContent.author,
-                'mr-auto rounded-t-xl rounded-br-xl border border-green-800 bg-green-200 p-2':
-                  username !== messageContent.author,
+              key={index}
+              className={cn('my-2 flex w-[70%]', {
+                'ml-auto': isUser,
+                'mr-auto': !isUser,
               })}
             >
-              <div className='flex w-full flex-col p-1'>
+              <div
+                className={cn(
+                  'break-words rounded-t-xl border border-green-800 bg-green-200 p-2',
+                  isUser ? 'ml-auto rounded-bl-xl' : 'mr-auto rounded-br-xl'
+                )}
+              >
                 <p className='text-sm font-semibold'>
                   {messageContent.message}
                 </p>
-                <span className='flex items-end justify-end text-xs font-medium'>
+                <span className='flex justify-end text-xs font-medium'>
                   {messageContent.time}
                 </span>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </main>
-      <footer className='mt-auto flex h-20 items-center justify-center gap-3 rounded-md border border-green-500 bg-background px-3 py-1 focus:outline-double'>
+
+      <footer className='mt-auto flex h-20 items-center justify-center gap-3 rounded-md border border-green-500 bg-background px-3 py-1'>
         <textarea
           rows={1}
-          cols={1}
           maxLength={500}
           value={currentMessage}
           placeholder='Type message here...'
-          onChange={(event) => setCurrentMessage(event.target.value)}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter') sendMessage();
-          }}
-          className='!h-full w-full border-0 bg-transparent outline-none placeholder:text-foreground/50'
+          onChange={(e) => setCurrentMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className='h-full w-full border-0 bg-transparent outline-none placeholder:text-foreground/50'
         />
         <VscSend
           onClick={sendMessage}

@@ -41,7 +41,7 @@ const REASON_TYPE = [
 ] as const;
 
 const validator = z.object({
-  subject: z.string().min(1, 'Username is required'),
+  subject: z.string().min(1, 'Subject is required'),
   reasonType: z.enum(REASON_TYPE) || 'normal_contact',
   description: z
     .string()
@@ -54,6 +54,7 @@ interface Props {
   showDialoge: boolean;
   setShowDialoge: (showDialoge: boolean) => void;
 }
+
 export default function CreateTicketDialoge({
   setShowDialoge,
   showDialoge,
@@ -68,27 +69,27 @@ export default function CreateTicketDialoge({
   });
 
   const onSubmit = useMutation({
-    mutationFn: async (val: ticketTypes) => {
-      try {
-        const res = await axios.post(`${env.BACKEND_URL}/create-ticket`, val);
-        socket.emit('create_ticket', res.data.data);
-        toast.success('Ticket created successfully');
+    mutationFn: async (val: ticketTypes) =>
+      await axios.post(`${env.BACKEND_URL}/create-ticket`, val),
+    onSuccess: (res) => {
+      socket.emit('create_ticket', res.data.data);
+      toast.success('Ticket created successfully');
 
-        queryClient.invalidateQueries({
-          queryKey: ['tickets'],
-        });
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
 
-        ticketForm.reset();
-        setShowDialoge(false);
-        const newTicketId = res.data.data._id as string;
-        const parmas = new URLSearchParams(searchParams.toString());
-        parmas.set('ticket', newTicketId);
-        router.push(`/dash/chat?${parmas.toString()}`);
-      } catch (error) {
-        toast.error(getErrorMessage(error));
-      }
+      ticketForm.reset();
+      setShowDialoge(false);
+
+      const newTicketId = res.data.data._id as string;
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('ticket', newTicketId);
+      router.push(`/dash/chat?${params.toString()}`);
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
     },
   });
+
   return (
     <Dialog open={showDialoge} onOpenChange={setShowDialoge}>
       <DialogTrigger>
@@ -101,9 +102,7 @@ export default function CreateTicketDialoge({
           </DialogTitle>
           <DialogDescription>
             <form
-              onSubmit={ticketForm.handleSubmit((val) => {
-                onSubmit.mutate(val);
-              })}
+              onSubmit={ticketForm.handleSubmit((val) => onSubmit.mutate(val))}
               className='flex min-h-[40vh] w-full flex-col items-center gap-5 rounded-lg border-2 border-black/10 p-4 shadow'
             >
               <h3 className='my-10 border-b pb-2 text-xl font-bold'>
@@ -148,9 +147,10 @@ export default function CreateTicketDialoge({
               </div>
               <Button
                 type='submit'
+                disabled={onSubmit.isPending} // Fixed: Replaced isLoading with isPending
                 className='h-10 w-full rounded-md text-sm font-semibold'
               >
-                Create Ticket
+                {onSubmit.isPending ? 'Creating...' : 'Create Ticket'}
               </Button>
             </form>
           </DialogDescription>
